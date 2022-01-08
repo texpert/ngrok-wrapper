@@ -1,14 +1,23 @@
 # frozen_string_literal: true
 
-# rubocop:disable RSpec/DescribedClass
-RSpec.describe Ngrok::Wrapper do
-  before { allow(Ngrok::Wrapper).to receive(:ensure_binary) }
+RSpec.describe 'Ngrok::Wrapper' do
+  let(:log) { File.read("#{RSPEC_ROOT}/fixtures/ngrok.sample.log") }
+  let(:fake_pid) { rand(99_999) }
+
+  before do
+    allow(Ngrok::Wrapper).to receive(:ensure_binary)
+    allow(Ngrok::Wrapper).to receive(:raise_if_similar_ngroks)
+    allow(Process).to receive(:spawn).and_return(fake_pid)
+    allow(Process).to receive(:kill)
+  end
 
   it 'has a version number' do
     expect(Ngrok::Wrapper::VERSION).not_to be nil
   end
 
   describe 'Before start' do
+    before { allow_any_instance_of(Tempfile).to receive(:read).and_return(log) }
+
     it 'is not running' do
       expect(Ngrok::Wrapper.running?).to be false
     end
@@ -23,9 +32,13 @@ RSpec.describe Ngrok::Wrapper do
   end
 
   describe 'After start' do
-    before(:all) { Ngrok::Wrapper.start } # rubocop:disable RSpec/BeforeAfterAll
+    before do
+      allow_any_instance_of(Tempfile).to receive(:read).and_return(log)
 
-    after(:all)  { Ngrok::Wrapper.stop } # rubocop:disable RSpec/BeforeAfterAll
+      Ngrok::Wrapper.start
+    end
+
+    after { Ngrok::Wrapper.stop }
 
     it 'is running' do
       expect(Ngrok::Wrapper.running?).to be true
@@ -61,6 +74,8 @@ RSpec.describe Ngrok::Wrapper do
   end
 
   describe 'Custom log file' do
+    before { allow_any_instance_of(File).to receive(:read).and_return(log) }
+
     it 'uses custom log file' do
       Ngrok::Wrapper.start(log: 'test.log')
       expect(Ngrok::Wrapper.running?).to eq true
@@ -71,28 +86,55 @@ RSpec.describe Ngrok::Wrapper do
   end
 
   describe 'Custom subdomain' do
-    it 'fails without authtoken' do
-      expect { Ngrok::Wrapper.start(subdomain: 'test-subdomain') }.to raise_error Ngrok::Error
+    describe 'when no authtoken is specified in ngrok config file' do
+      let(:no_auth_log) { File.read("#{RSPEC_ROOT}/fixtures/ngrok.no_auth_token.log") }
+
+      it 'raises Ngrok::Error exception' do
+        allow_any_instance_of(Tempfile).to receive(:read).and_return(no_auth_log)
+
+        expect { Ngrok::Wrapper.start(subdomain: 'test-subdomain') }.to raise_error Ngrok::Error
+      end
     end
 
-    it 'fails with incorrect authtoken' do
-      expect do
-        Ngrok::Wrapper.start(subdomain: 'test-subdomain', authtoken: 'incorrect_token')
-      end.to raise_error Ngrok::Error
+    describe 'when an invalid authtoken is specified in ngrok config file' do
+      let(:invalid_auth_log) { File.read("#{RSPEC_ROOT}/fixtures/ngrok.no_auth_token.log") }
+
+      it 'fails with incorrect authtoken' do
+        allow_any_instance_of(Tempfile).to receive(:read).and_return(invalid_auth_log)
+
+        expect do
+          Ngrok::Wrapper.start(subdomain: 'test-subdomain', authtoken: 'incorrect_token')
+        end.to raise_error Ngrok::Error
+      end
     end
   end
 
   describe 'Custom hostname' do
-    it 'fails without authtoken' do
-      expect { Ngrok::Wrapper.start(hostname: 'example.com') }.to raise_error Ngrok::Error
+    describe 'when no authtoken is specified in ngrok config file' do
+      let(:no_auth_log) { File.read("#{RSPEC_ROOT}/fixtures/ngrok.no_auth_token.log") }
+
+      it 'raises Ngrok::Error exception' do
+        allow_any_instance_of(Tempfile).to receive(:read).and_return(no_auth_log)
+
+        expect { Ngrok::Wrapper.start(hostname: 'example.com') }.to raise_error Ngrok::Error
+      end
     end
 
-    it 'fails with incorrect authtoken' do
-      expect { Ngrok::Wrapper.start(hostname: 'example.com', authtoken: 'incorrect_token') }.to raise_error Ngrok::Error
+    describe 'when an invalid authtoken is specified in ngrok config file' do
+      let(:invalid_auth_log) { File.read("#{RSPEC_ROOT}/fixtures/ngrok.no_auth_token.log") }
+
+      it 'raises Ngrok::Error exception' do
+        allow_any_instance_of(Tempfile).to receive(:read).and_return(invalid_auth_log)
+
+        expect { Ngrok::Wrapper.start(hostname: 'example.com', authtoken: 'incorrect_token') }
+          .to raise_error Ngrok::Error
+      end
     end
   end
 
   describe 'Custom addr' do
+    before { allow_any_instance_of(Tempfile).to receive(:read).and_return(log) }
+
     it 'maps port param to addr' do
       port = 10_010
       Ngrok::Wrapper.start(port: port)
@@ -116,6 +158,8 @@ RSpec.describe Ngrok::Wrapper do
   end
 
   describe 'Custom region' do
+    before { allow_any_instance_of(Tempfile).to receive(:read).and_return(log) }
+
     it "doesn't include the -region parameter when it is not provided" do
       Ngrok::Wrapper.start
       expect(Ngrok::Wrapper.__send__(:ngrok_exec_params)).not_to include('-region=')
@@ -131,6 +175,8 @@ RSpec.describe Ngrok::Wrapper do
   end
 
   describe 'Custom bind-tls' do
+    before { allow_any_instance_of(Tempfile).to receive(:read).and_return(log) }
+
     it "doesn't include the -bind-tls parameter when it is not provided" do
       Ngrok::Wrapper.start
       expect(Ngrok::Wrapper.__send__(:ngrok_exec_params)).not_to include('-bind-tls=')
@@ -170,6 +216,8 @@ RSpec.describe Ngrok::Wrapper do
   end
 
   describe 'Custom parameters provided' do
+    before { allow_any_instance_of(Tempfile).to receive(:read).and_return(log) }
+
     it "doesn't include the -inspect parameter when it is not provided" do
       Ngrok::Wrapper.start
       expect(Ngrok::Wrapper.__send__(:ngrok_exec_params)).not_to include('-inspect=')
@@ -188,8 +236,6 @@ RSpec.describe Ngrok::Wrapper do
   end
 
   describe '#start' do
-    before { allow(Process).to receive(:kill) }
-
     after { Ngrok::Wrapper.stop }
 
     describe 'when persistence param is true' do
@@ -222,4 +268,3 @@ RSpec.describe Ngrok::Wrapper do
     end
   end
 end
-# rubocop:enable RSpec/DescribedClass

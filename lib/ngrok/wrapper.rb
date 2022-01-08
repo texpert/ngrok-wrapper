@@ -131,7 +131,7 @@ module Ngrok
           Process.spawn("exec nohup ngrok http #{ngrok_exec_params} &")
           @pid = ngrok_process_status_lines(refetch: true).find { |line| line.include?('ngrok http -log') }.split[0]
         else
-          @pid = spawn("exec ngrok http #{ngrok_exec_params}")
+          @pid = Process.spawn("exec ngrok http #{ngrok_exec_params}")
           at_exit { Ngrok::Wrapper.stop }
         end
 
