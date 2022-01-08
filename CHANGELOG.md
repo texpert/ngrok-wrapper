@@ -5,3 +5,4 @@
 - Added support for `persistence` parameter
 - Added support for `persistence_file` parameter
 - Added `rubocop`, `rubocop-performance`, and `rubocop-rspec` gems as development dependencies
+- Added `simplecov` gem for code coverage analysis

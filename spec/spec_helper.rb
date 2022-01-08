@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'simplecov'
 require 'ngrok/wrapper'
 
 RSpec.configure do |config|
