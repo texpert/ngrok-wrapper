@@ -2,6 +2,8 @@
 
 # rubocop:disable RSpec/DescribedClass
 RSpec.describe Ngrok::Wrapper do
+  before { allow(Ngrok::Wrapper).to receive(:ensure_binary) }
+
   it 'has a version number' do
     expect(Ngrok::Wrapper::VERSION).not_to be nil
   end
