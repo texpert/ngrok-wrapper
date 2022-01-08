@@ -31,7 +31,11 @@ module Ngrok
         spawn_new_ngrok(persistent_ngrok: persistent_ngrok) if stopped?
 
         @status = :running
-        store_new_ngrok_process if persistent_ngrok
+        if persistent_ngrok
+          # Record the attributes of the new process so that it can be reused on a subsequent call.
+          File.write(@persistence_file, { pid: @pid, ngrok_url: @ngrok_url, ngrok_url_https: @ngrok_url_https }.to_json)
+        end
+
         @ngrok_url
       end
 
@@ -126,7 +130,8 @@ module Ngrok
 
       def spawn_new_ngrok(persistent_ngrok:)
         raise_if_similar_ngroks(nil)
-        prepare_ngrok_logfile
+        # Prepare the log file into which ngrok output will be redirected in `ngrok_exec_params`
+        @params[:log] = @params[:log] ? File.open(@params[:log], 'w+') : Tempfile.new('ngrok')
         if persistent_ngrok
           Process.spawn("exec nohup ngrok http #{ngrok_exec_params} &")
           @pid = ngrok_process_status_lines(refetch: true).find { |line| line.include?('ngrok http -log') }.split[0]
@@ -136,16 +141,6 @@ module Ngrok
         end
 
         fetch_urls
-      end
-
-      def prepare_ngrok_logfile
-        # Prepare the log file into which ngrok output will be redirected in `ngrok_exec_params`
-        @params[:log] = @params[:log] ? File.open(@params[:log], 'w+') : Tempfile.new('ngrok')
-      end
-
-      def store_new_ngrok_process
-        # Record the attributes of the new process so that it can be reused on a subsequent call.
-        File.write(@persistence_file, { pid: @pid, ngrok_url: @ngrok_url, ngrok_url_https: @ngrok_url_https }.to_json)
       end
 
       def ngrok_exec_params

@@ -240,9 +240,10 @@ RSpec.describe 'Ngrok::Wrapper' do
 
     describe 'when persistence param is true' do
       it 'tries fetching params of an already running Ngrok and store Ngrok process data into a file' do
+        allow(File).to receive(:write)
         expect(Ngrok::Wrapper).to receive(:try_params_from_running_ngrok)
         expect(Ngrok::Wrapper).to receive(:spawn_new_ngrok).with(persistent_ngrok: true)
-        expect(Ngrok::Wrapper).to receive(:store_new_ngrok_process)
+        expect(File).to receive(:write)
 
         Ngrok::Wrapper.start(persistence: true)
       end
@@ -252,7 +253,7 @@ RSpec.describe 'Ngrok::Wrapper' do
       it "doesn't try to fetch params of an already running Ngrok" do
         expect(Ngrok::Wrapper).not_to receive(:try_params_from_running_ngrok)
         expect(Ngrok::Wrapper).to receive(:spawn_new_ngrok).with(persistent_ngrok: false)
-        expect(Ngrok::Wrapper).not_to receive(:store_new_ngrok_process)
+        expect_any_instance_of(File).not_to receive(:write)
 
         Ngrok::Wrapper.start(persistence: false)
       end
