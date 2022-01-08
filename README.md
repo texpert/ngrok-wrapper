@@ -2,6 +2,9 @@
 
 Ngrok-wrapper gem is a ruby wrapper for ngrok v2.
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/d978e217a8219326e325/maintainability)](https://codeclimate.com/github/texpert/ngrok-wrapper/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/d978e217a8219326e325/test_coverage)](https://codeclimate.com/github/texpert/ngrok-wrapper/test_coverage)
+
 ## History
 
 Ngrok-wrapper is renamed from my fork of the initial awesome [Ngrok-tunnel](https://github.com/bogdanovich/ngrok-tunnel) gem by [Anton Bogdanovich](https://github.com/bogdanovich)
