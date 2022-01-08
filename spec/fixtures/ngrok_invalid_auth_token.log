@@ -1,0 +1,37 @@
+t=2022-01-08T22:01:24+0200 lvl=info msg="open config file" path=/Users/thunder/.ngrok2/ngrok.yml err=nil
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="ignoring manifest file with unhandled mimetype" name=glyphicons-halflings-regular.svg ext=.svg
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="ignoring manifest file with unhandled mimetype" name=vendor.svg ext=.svg
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="starting component" obj=app name=web
+t=2022-01-08T22:01:24+0200 lvl=info msg="starting web service" obj=web addr=127.0.0.1:4040
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="starting component" obj=app name=updater
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="starting component" obj=app name="signal handler"
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="starting component" obj=app name="Tunnel session"
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="checking for updates periodically" obj=updater interval=6h0m0s
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="check for update" obj=updater
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="open stream" obj=csess id=a09f6c909db5 reqtype=0 err=nil
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="encode request" obj=csess id=a09f6c909db5 sid=3 req="&{Version:[2] ClientID: Extra:{OS:darwin Arch:amd64 Authtoken:1gsJ49S2XCIOZM5AMynyeht9w8X_5ABZ98sjGeNwNHDaR Version:2.3.40 Hostname:tunnel.us.ngrok.com UserAgent:ngrok/2 Metadata: Cookie: HeartbeatInterval:10000000000 HeartbeatTolerance:15000000000 Fingerprint:0xc000438900 UpdateUnsupportedError:0xc000283190 StopUnsupportedError:0xc000283180 RestartUnsupportedError:0xc000283170}}" err=nil
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="decoded response" obj=csess id=a09f6c909db5 sid=3 resp="&{Version: ClientID: Error:The authtoken you specified does not look like a proper ngrok tunnel authtoken.\nYour authtoken: 1gsJ49S2XCIOZM5AMynyeht9w8X_5ABZ98sjGeNwNHDaR\nInstructions to install your authtoken are on your ngrok dashboard:\nhttps://dashboard.ngrok.com/get-started/your-authtoken\r\n\r\nERR_NGROK_105\r\n Extra:{Version: Cookie: AccountName: SessionDuration:0 PlanName:}}" err=nil
+t=2022-01-08T22:01:24+0200 lvl=eror msg="failed to auth" obj=tunnels.session err="The authtoken you specified does not look like a proper ngrok tunnel authtoken.\nYour authtoken: 1gsJ49S2XCIOZM5AMynyeht9w8X_5ABZ98sjGeNwNHDaR\nInstructions to install your authtoken are on your ngrok dashboard:\nhttps://dashboard.ngrok.com/get-started/your-authtoken\r\n\r\nERR_NGROK_105\r\n"
+t=2022-01-08T22:01:24+0200 lvl=eror msg="failed to reconnect session" obj=csess id=49b66f54e43d err="The authtoken you specified does not look like a proper ngrok tunnel authtoken.\nYour authtoken: 1gsJ49S2XCIOZM5AMynyeht9w8X_5ABZ98sjGeNwNHDaR\nInstructions to install your authtoken are on your ngrok dashboard:\nhttps://dashboard.ngrok.com/get-started/your-authtoken\r\n\r\nERR_NGROK_105\r\n"
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="sleep before reconnect" obj=csess id=49b66f54e43d secs=0
+t=2022-01-08T22:01:24+0200 lvl=eror msg="session closing" obj=tunnels.session err="The authtoken you specified does not look like a proper ngrok tunnel authtoken.\nYour authtoken: 1gsJ49S2XCIOZM5AMynyeht9w8X_5ABZ98sjGeNwNHDaR\nInstructions to install your authtoken are on your ngrok dashboard:\nhttps://dashboard.ngrok.com/get-started/your-authtoken\r\n\r\nERR_NGROK_105\r\n"
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="component stopped" obj=app name="Tunnel session" err="The authtoken you specified does not look like a proper ngrok tunnel authtoken.\nYour authtoken: 1gsJ49S2XCIOZM5AMynyeht9w8X_5ABZ98sjGeNwNHDaR\nInstructions to install your authtoken are on your ngrok dashboard:\nhttps://dashboard.ngrok.com/get-started/your-authtoken\r\n\r\nERR_NGROK_105\r\n"
+t=2022-01-08T22:01:24+0200 lvl=info msg="received stop request" obj=app stopReq="{err:0xc0000a5ad0 restart:false}"
+t=2022-01-08T22:01:24+0200 lvl=eror msg="terminating with error" obj=app err="The authtoken you specified does not look like a proper ngrok tunnel authtoken.\nYour authtoken: 1gsJ49S2XCIOZM5AMynyeht9w8X_5ABZ98sjGeNwNHDaR\nInstructions to install your authtoken are on your ngrok dashboard:\nhttps://dashboard.ngrok.com/get-started/your-authtoken\r\n\r\nERR_NGROK_105\r\n"
+t=2022-01-08T22:01:24+0200 lvl=warn msg="failed to check for update" obj=updater err="Post \"https://update.equinox.io/check\": context canceled"
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="waiting for all components to stop" obj=app
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="waiting for components to stop" obj=app remaining=3
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="waiting for components to stop" obj=app remaining=2
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="waiting for components to stop" obj=app remaining=1
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="component stopped" obj=app name=updater err=nil
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="component stopped" obj=app name="signal handler" err=nil
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="all components stopped" obj=app
+t=2022-01-08T22:01:24+0200 lvl=crit msg="command failed" err="The authtoken you specified does not look like a proper ngrok tunnel authtoken.\nYour authtoken: 1gsJ49S2XCIOZM5AMynyeht9w8X_5ABZ98sjGeNwNHDaR\nInstructions to install your authtoken are on your ngrok dashboard:\nhttps://dashboard.ngrok.com/get-started/your-authtoken\r\n\r\nERR_NGROK_105\r\n"
+The authtoken you specified does not look like a proper ngrok tunnel authtoken.
+Your authtoken: 1gsJ49S2XCIOZM5AMynyeht9w8X_5ABZ98sjGeNwNHDaR
+Instructions to install your authtoken are on your ngrok dashboard:
+https://dashboard.ngrok.com/get-started/your-authtoken
+
+ERR_NGROK_105
+
+t=2022-01-08T22:01:24+0200 lvl=dbug msg="component stopped" obj=app name=web err=nil

@@ -1,0 +1,43 @@
+t=2022-01-08T22:03:24+0200 lvl=info msg="open config file" path=/Users/thunder/.ngrok2/ngrok.yml err=nil
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="ignoring manifest file with unhandled mimetype" name=vendor.svg ext=.svg
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="ignoring manifest file with unhandled mimetype" name=glyphicons-halflings-regular.svg ext=.svg
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="starting component" obj=app name="signal handler"
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="starting component" obj=app name="Tunnel session"
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="starting component" obj=app name=web
+t=2022-01-08T22:03:24+0200 lvl=info msg="starting web service" obj=web addr=127.0.0.1:4040
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="starting component" obj=app name=updater
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="checking for updates periodically" obj=updater interval=6h0m0s
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="check for update" obj=updater
+t=2022-01-08T22:03:24+0200 lvl=info msg=start pg=/grpc/agent.Web/State id=f491cd33fec883bf
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="open stream" obj=csess id=bee4588e8c6f reqtype=0 err=nil
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="encode request" obj=csess id=bee4588e8c6f sid=3 req="&{Version:[2] ClientID: Extra:{OS:darwin Arch:amd64 Authtoken: Version:2.3.40 Hostname:tunnel.us.ngrok.com UserAgent:ngrok/2 Metadata: Cookie: HeartbeatInterval:10000000000 HeartbeatTolerance:15000000000 Fingerprint:0xc000442c30 UpdateUnsupportedError:0xc0000a52f0 StopUnsupportedError:0xc0000a52e0 RestartUnsupportedError:0xc0000a52d0}}" err=nil
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="decoded response" obj=csess id=bee4588e8c6f sid=3 resp="&{Version:2 ClientID:cb5f5f87e10e18bf4898de4a3a74d14b Error: Extra:{Version:prod Cookie:PrKmFyxHID0adtX44ErfI+A9gur8/kWa$S+hD0y1YuDXBOgvRysUB4wPAqfDnq8qBKSCKIvenBxXk8d0mM20jXvewiT5y+PSeMJ1ev6wrxFlrMho0T2AkG/39mF0QxTCWNgCYrrSK4Q+fRyr7I+7477gVIbVN7HZ0hhaqUK0BFFvIXea531lwDg88oqrW0nvjBqyL1vw3rqowuUc6TB+9+Pc2CPxBY9sERlcvOYkzVSR4bn0mlTG0vBI= AccountName: SessionDuration:7199 PlanName:}}" err=nil
+t=2022-01-08T22:03:24+0200 lvl=info msg="tunnel session started" obj=tunnels.session
+t=2022-01-08T22:03:24+0200 lvl=info msg="client session established" obj=csess id=bd4add4fa19a
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="open stream" obj=csess id=bee4588e8c6f clientid=cb5f5f87e10e18bf4898de4a3a74d14b reqtype=1 err=nil
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="encode request" obj=csess id=bee4588e8c6f clientid=cb5f5f87e10e18bf4898de4a3a74d14b sid=7 req="&{ID: ClientID: Proto:https Opts:0xc0000c4780 Extra:{Token: IPPolicyRef: Metadata:}}" err=nil
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="decoded response" obj=csess id=bee4588e8c6f clientid=cb5f5f87e10e18bf4898de4a3a74d14b sid=7 resp="&{ClientID: URL: Proto: Opts:<nil> Error:Forwarding to local port 443 or a local https:// URL is only available after you sign up.\nSign up at: https://dashboard.ngrok.com/signup\n\nIf you have already signed up, make sure your authtoken is installed.\nYour authtoken is available on your dashboard: https://dashboard.ngrok.com/get-started/your-authtoken\r\n\r\nERR_NGROK_340\r\n Extra:{Token:}}" err=nil
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="start tunnel listen" obj=tunnels.session name=command_line proto=https opts="&{Hostname: Auth: Subdomain: HostHeaderRewrite:false LocalURLScheme:https}" err="Forwarding to local port 443 or a local https:// URL is only available after you sign up.\nSign up at: https://dashboard.ngrok.com/signup\n\nIf you have already signed up, make sure your authtoken is installed.\nYour authtoken is available on your dashboard: https://dashboard.ngrok.com/get-started/your-authtoken\r\n\r\nERR_NGROK_340\r\n"
+t=2022-01-08T22:03:24+0200 lvl=eror msg="session closing" obj=tunnels.session err="Forwarding to local port 443 or a local https:// URL is only available after you sign up.\nSign up at: https://dashboard.ngrok.com/signup\n\nIf you have already signed up, make sure your authtoken is installed.\nYour authtoken is available on your dashboard: https://dashboard.ngrok.com/get-started/your-authtoken\r\n\r\nERR_NGROK_340\r\n"
+t=2022-01-08T22:03:24+0200 lvl=info msg="accept failed" obj=csess id=bd4add4fa19a err="reconnecting session closed"
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="component stopped" obj=app name="Tunnel session" err="Forwarding to local port 443 or a local https:// URL is only available after you sign up.\nSign up at: https://dashboard.ngrok.com/signup\n\nIf you have already signed up, make sure your authtoken is installed.\nYour authtoken is available on your dashboard: https://dashboard.ngrok.com/get-started/your-authtoken\r\n\r\nERR_NGROK_340\r\n"
+t=2022-01-08T22:03:24+0200 lvl=info msg="received stop request" obj=app stopReq="{err:0xc0000a5980 restart:false}"
+t=2022-01-08T22:03:24+0200 lvl=eror msg="terminating with error" obj=app err="Forwarding to local port 443 or a local https:// URL is only available after you sign up.\nSign up at: https://dashboard.ngrok.com/signup\n\nIf you have already signed up, make sure your authtoken is installed.\nYour authtoken is available on your dashboard: https://dashboard.ngrok.com/get-started/your-authtoken\r\n\r\nERR_NGROK_340\r\n"
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="tunnel session closing permanently" obj=tunnels.session err="not reconnecting, session closed by the client side"
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="waiting for all components to stop" obj=app
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="waiting for components to stop" obj=app remaining=3
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="waiting for components to stop" obj=app remaining=2
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="waiting for components to stop" obj=app remaining=1
+t=2022-01-08T22:03:24+0200 lvl=warn msg="failed to check for update" obj=updater err="Post \"https://update.equinox.io/check\": context canceled"
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="component stopped" obj=app name=web err=nil
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="all components stopped" obj=app
+t=2022-01-08T22:03:24+0200 lvl=crit msg="command failed" err="Forwarding to local port 443 or a local https:// URL is only available after you sign up.\nSign up at: https://dashboard.ngrok.com/signup\n\nIf you have already signed up, make sure your authtoken is installed.\nYour authtoken is available on your dashboard: https://dashboard.ngrok.com/get-started/your-authtoken\r\n\r\nERR_NGROK_340\r\n"
+Forwarding to local port 443 or a local https:// URL is only available after you sign up.
+Sign up at: https://dashboard.ngrok.com/signup
+
+If you have already signed up, make sure your authtoken is installed.
+Your authtoken is available on your dashboard: https://dashboard.ngrok.com/get-started/your-authtoken
+
+ERR_NGROK_340
+
+t=2022-01-08T22:03:24+0200 lvl=dbug msg="component stopped" obj=app name="signal handler" err=nil
