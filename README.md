@@ -4,8 +4,7 @@ Ngrok-wrapper gem is a ruby wrapper for ngrok v2.
 
 ## History
 
-Ngrok-wrapper is renamed from my fork of the initial awesome [Ngrok-tunnel](https://github.
-com/bogdanovich/ngrok-tunnel) gem by [Anton Bogdanovich](https://github.com/bogdanovich)
+Ngrok-wrapper is renamed from my fork of the initial awesome [Ngrok-tunnel](https://github.com/bogdanovich/ngrok-tunnel) gem by [Anton Bogdanovich](https://github.com/bogdanovich)
 
 I was dealing with debugging work on some webhooks at my current project. Using Ngrok on a free plan, I quickly got tired of Ngrok generating a new endpoint URL every time on restarting the process. 
 
