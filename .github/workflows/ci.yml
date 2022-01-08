@@ -7,9 +7,21 @@ on:
     branches: [ '**' ]
 
 jobs:
-  build:
-    name: Build
+  tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - ruby: 2.6
+
+          - ruby: 2.7
+
+          - ruby: 3.0
+
+          - ruby: 3.1
+
+    name: ruby ${{ matrix.ruby }}
 
     steps:
       - name: Checkout
