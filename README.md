@@ -85,16 +85,102 @@ Ngrok::Wrapper.start(addr: 'foo.dev:80',
                     authtoken: 'MY_TOKEN',
                     inspect: false,
                     log: 'ngrok.log',
-                    config: '~/.ngrok',
+                    config: '~/.ngrok2/ngrok.yml',
                     persistence: true,
                     persistence_file: '/Users/user/.ngrok2/ngrok-process.json') # optional parameter
-
 ```
 
-### With Rails (Rack server)
+- If `persistence: true` is specified, on the 1st server start, an Ngrok process will get invoked, and the attributes of this Ngrok process, like `pid`, URLs and `port` will be stored in the `persistence_file`. 
+- On server stop, the Ngrok process will not be killed. 
+- On the subsequent server start, Ngrok::Wrapper will read the process attributes from the `persistence_file` and will try to re-use the running Ngrok process, if it hadn't been killed.
+  - The `persistence_file` parameter is optional when invoking `Ngrok::Wrapper.start`, by default the '/Users/user/.ngrok2/ngrok-process.json' will be created and used
+  - The `authtoken` parameter is also optional, as long as the `config` parameter is specified (usually Ngrok config 
+    is the `~/.ngrok2/ngrok.yml` file)
 
-See [examples/rack_server.rb](examples/rack_server.rb) and [examples/rails_server.rb](examples/rails_server.rb) to get an idea how to use it along with a Rack or Rails server so that it automatically starts and stops when the server does.
+### With Rails
 
+- Use ~/.ngrok2/ngrok.yml as a config file
+- Set NGROK_INSPECT=false if you want to disable the inspector web-server
+- Add this code at the end of `config/application.rb` in a Rails project
+
+```ruby
+NGROK_ENABLED = Rails.env.development? &&
+                  (Rails.const_defined?(:Server) || ($PROGRAM_NAME.include?('puma') && Puma.const_defined?(:Server))) &&
+                  ENV['NGROK_TUNNEL'] == 'true'
+```
+
+- Add the following code at the start of `config/environments/development.rb`
+
+```ruby
+if NGROK_ENABLED
+  require 'ngrok/wrapper'
+
+  options = { addr: 'https://localhost:3000', persistence: true }
+  options[:config] = ENV.fetch('NGROK_CONFIG', "#{ENV['HOME']}/.ngrok2/ngrok.yml")
+  options[:inspect] = ENV['NGROK_INSPECT'] if ENV['NGROK_INSPECT']
+
+  puts "[NGROK] tunneling at #{Ngrok::Wrapper.start(options)}"
+  puts '[NGROK] inspector web interface listening at http://127.0.0.1:4040' if ENV['NGROK_INSPECT'] == 'true'
+
+  NGROK_URL = Ngrok::Wrapper.ngrok_url_https
+end
+```
+
+- If you need SSL (`https`) webhooks, you can use the `localhost` gem and then, in `config/puma.rb`:
+
+```ruby
+if self.class.const_defined?(:NGROK_ENABLED)
+  bind 'ssl://localhost:3000'
+else
+  port ENV.fetch('PORT', 3000)
+end
+```
+
+- And in `config/environments/development.rb`:
+
+```ruby
+config.force_ssl = true if NGROK_ENABLED
+
+config.action_mailer.default_url_options = {
+  host: NGROK_ENABLED ? NGROK_URL.delete_prefix('https://') : 'myapp.local',
+  port: 3000
+}
+```
+
+- To make the sessions bound to the Ngrok domain, in `config/initializers/session_store.rb`:
+
+```ruby
+Rails.application.config.session_store :cookie_store,
+  key: "_#{Rails.env}_my_app_secure_session_3",
+  domain: NGROK_ENABLED ? NGROK_URL.delete_prefix('https://') : :all,
+  tld_length: 2
+```
+
+- To use the webhooks when sending to, for example, Slack API, you can define the redirect URL in controller as follows:
+
+```ruby
+redirect_uri = NGROK_ENABLED ? "#{NGROK_URL}/slack/oauth/#{organization.id}" : slack_oauth_url(organization.id)
+```
+
+### With Rack server
+
+- Use ~/.ngrok2/ngrok.yml as a config file.
+- Set NGROK_INSPECT=false if you want to disable the inspector web-server.
+- Add the following code to the end of a configuration file of your preferred web-server, e.g. config/puma.rb, 
+config/unicorn.rb, or config/thin.rb
+
+```ruby
+require 'ngrok/wrapper'
+
+options = { addr: 'https://localhost:3000', persistence: true }
+options[:config] = ENV.fetch('NGROK_CONFIG', "#{ENV['HOME']}/.ngrok2/ngrok.yml")
+options[:inspect] = ENV['NGROK_INSPECT'] if ENV['NGROK_INSPECT']
+
+puts "[NGROK] tunneling at #{Ngrok::Wrapper.start(options)}"
+puts '[NGROK] inspector web interface listening at http://127.0.0.1:4040' if ENV['NGROK_INSPECT'] == 'true'
+
+NGROK_URL = Ngrok::Wrapper.ngrok_url_https
+```
 
 ## Contributing
 
