@@ -241,7 +241,7 @@ RSpec.describe 'Ngrok::Wrapper' do
           let(:state) do
             { 'pid'             => '795',
               'ngrok_url'       => 'http://b1cd-109-185-141-9.ngrok.io',
-              'ngrok_url_https' => 'https://b1cd-109-185-141-9.ngrok.io'}
+              'ngrok_url_https' => 'https://b1cd-109-185-141-9.ngrok.io' }
           end
 
           describe 'checking if a similar Ngrok is running' do
@@ -312,7 +312,7 @@ RSpec.describe 'Ngrok::Wrapper' do
 
                 expect(Ngrok::Wrapper).to receive(:spawn_new_ngrok).with(persistent_ngrok: true)
                 expect(Ngrok::Wrapper)
-                  .to receive(:ngrok_process_status_lines).with(refetch: true)  #.and_return(new_ngrok_ps_lines)
+                  .to receive(:ngrok_process_status_lines).with(refetch: true)
                 allow(Ngrok::Wrapper).to receive(:fetch_urls)
 
                 Ngrok::Wrapper.start(persistence: true)

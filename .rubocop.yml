@@ -44,14 +44,14 @@ Metrics/ModuleLength:
 
 # Avoid complex methods.
 Metrics/CyclomaticComplexity:
-  Max: 10
+  Max: 11
 
 Metrics/MethodLength:
   CountComments: false  # count full line comments?
   Max: 25
 
 Metrics/PerceivedComplexity:
-  Max: 9
+  Max: 11
 
 Metrics/BlockLength:
   CountComments: false
