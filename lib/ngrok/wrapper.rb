@@ -10,7 +10,7 @@ module Ngrok
 
   class Wrapper
     class << self
-      attr_reader :pid, :ngrok_url, :ngrok_url_https, :status
+      attr_reader :pid, :ngrok_url, :ngrok_url_https, :status, :params
 
       def init(params = {})
         # map old key 'port' to 'addr' to maintain backwards compatibility with versions 2.0.21 and earlier
@@ -64,18 +64,6 @@ module Ngrok
         return addr if addr.is_a?(Numeric)
 
         addr.split(':').last.to_i
-      end
-
-      def log
-        @params[:log]
-      end
-
-      def subdomain
-        @params[:subdomain]
-      end
-
-      def authtoken
-        @params[:authtoken]
       end
 
       def inherited(subclass)
