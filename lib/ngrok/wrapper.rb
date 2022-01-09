@@ -163,20 +163,23 @@ module Ngrok
             result           = Hash[*result.flatten].invert
             @ngrok_url       = result['http']
             @ngrok_url_https = result['https']
-            return @ngrok_url if @ngrok_url
-            return @ngrok_url_https if @ngrok_url_https
+            break if @ngrok_url || @ngrok_url_https
           end
 
-          error = log_content.scan(/msg="command failed" err="([^"]+)"/).flatten
-          unless error.empty?
-            stop
-            raise Ngrok::Error, error.first
-          end
+          @error = log_content.scan(/msg="command failed" err="([^"]+)"/).flatten
+          break unless @error.empty?
 
           sleep 1
           @params[:log].rewind
         end
-        raise FetchUrlError, 'Unable to fetch external url'
+
+        @params[:log].close
+        return if @ngrok_url || @ngrok_url_https
+
+        stop
+        raise FetchUrlError, 'Unable to fetch external url' if @error.empty?
+
+        raise Ngrok::Error, @error.first
       end
 
       def ensure_binary
