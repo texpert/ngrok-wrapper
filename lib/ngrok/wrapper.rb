@@ -83,15 +83,17 @@ module Ngrok
 
       def raise_if_similar_ngroks(pid)
         other_ngrok_on_port = ngrok_process_status_lines.find do |line|
-          # If the pid is not nil and the line starts with this pid, do not take this line into account
-          !(pid && line.start_with?(pid)) && line.end_with?(addr.to_s)
+          # If found an Ngrok process with other pid, tunneling on the port, specified in Ngrok::Wrapper.start params
+          !line.start_with?(pid || '') && line.end_with?(addr.to_s)
         end
 
         raise Ngrok::Error, "ERROR: Other ngrok instances tunneling to port #{addr} found" if other_ngrok_on_port
 
+        return unless pid
+
         tunnel_on_other_port = ngrok_process_status_lines.find do |line|
-          # If the pid is not nil and the line starts with this pid, do not take this line into account
-          pid && line.start_with?(pid) && !line.end_with?(addr.to_s)
+          # If the line starts with this pid, but the port is other than specified in Ngrok::Wrapper.start params
+          line.start_with?(pid) && !line.end_with?(addr.to_s)
         end
 
         return unless tunnel_on_other_port
@@ -121,9 +123,10 @@ module Ngrok
       end
 
       def ngrok_running?(pid)
-        pid && Process.kill(0, pid.to_i) ? true : false
-      rescue Errno::ESRCH, Errno::EPERM
-        false
+        ngrok_process_status_lines.find do |line|
+          # If found the Ngrok process with correct pid, tunneling on the port, specified in Ngrok::Wrapper.start params
+          line.start_with?(pid) && line.end_with?(addr.to_s)
+        end
       end
 
       def spawn_new_ngrok(persistent_ngrok:)
@@ -132,7 +135,8 @@ module Ngrok
         @params[:log] = @params[:log] ? File.open(@params[:log], 'w+') : Tempfile.new('ngrok')
         if persistent_ngrok
           Process.spawn("exec nohup ngrok http #{ngrok_exec_params} &")
-          @pid = ngrok_process_status_lines(refetch: true).find { |line| line.include?('ngrok http -log') }.split[0]
+          @pid = ngrok_process_status_lines(refetch: true)
+                 .find { |line| line.include?('ngrok http -log') && line.end_with?(addr.to_s) }.split[0]
         else
           @pid = Process.spawn("exec ngrok http #{ngrok_exec_params}")
           at_exit { Ngrok::Wrapper.stop }
