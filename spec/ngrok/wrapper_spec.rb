@@ -239,13 +239,72 @@ RSpec.describe 'Ngrok::Wrapper' do
     after { Ngrok::Wrapper.stop }
 
     describe 'when persistence param is true' do
-      it 'tries fetching params of an already running Ngrok and store Ngrok process data into a file' do
+      before do
         allow(File).to receive(:write)
-        expect(Ngrok::Wrapper).to receive(:try_params_from_running_ngrok)
-        expect(Ngrok::Wrapper).to receive(:spawn_new_ngrok).with(persistent_ngrok: true)
-        expect(File).to receive(:write)
+        allow(Ngrok::Wrapper).to receive(:try_params_from_running_ngrok).and_call_original
+        allow(Ngrok::Wrapper).to receive(:parse_persistence_file).and_return(state)
+      end
 
-        Ngrok::Wrapper.start(persistence: true)
+      describe 'tries fetching params of an already running Ngrok and store Ngrok process data into a file' do
+        describe 'when fetching params returns nil' do
+          let(:state) { nil }
+
+          it 'tries fetching params of an already running Ngrok and store Ngrok process data into a file' do
+            expect(Ngrok::Wrapper).to receive(:try_params_from_running_ngrok)
+            expect(Ngrok::Wrapper).to receive(:spawn_new_ngrok).with(persistent_ngrok: true)
+            expect(File).to receive(:write)
+
+            Ngrok::Wrapper.start(persistence: true)
+          end
+        end
+
+        describe 'when fetching params returns a legit hash' do
+          let(:state) do
+            { 'pid'             => '795',
+              'ngrok_url'       => 'http://b1cd-109-185-141-9.ngrok.io',
+              'ngrok_url_https' => 'https://b1cd-109-185-141-9.ngrok.io'}
+          end
+
+          describe 'checking if a similar Ngrok is running' do
+            before do
+              allow(Ngrok::Wrapper).to receive(:raise_if_similar_ngroks).and_call_original
+              allow(Ngrok::Wrapper).to receive(:ngrok_process_status_lines).and_return(ngrok_ps_lines)
+
+              expect(Ngrok::Wrapper).to receive(:try_params_from_running_ngrok)
+              expect(Ngrok::Wrapper).not_to receive(:spawn_new_ngrok)
+            end
+
+            describe 'when a similar Ngrok with other pid is already running' do
+              let(:ngrok_ps_lines) do
+                ['71986   ??  S   0:04.81 ngrok http -config /Users/thunder/.ngrok2/ngrok.yml https://localhost:3001']
+              end
+
+              it 'raises exception' do
+                expect { Ngrok::Wrapper.start(persistence: true) }
+                  .to raise_error(Ngrok::Error, 'ERROR: Other ngrok instances tunneling to port 3001 found')
+              end
+            end
+
+            describe 'when Ngrok with the persisted pid is already running, but on a different port' do
+              let(:ngrok_ps_lines) do
+                ['795   ??  S   0:04.81 ngrok http -config /Users/thunder/.ngrok2/ngrok.yml https://localhost:3000']
+              end
+
+              it 'raises exception' do
+                expect { Ngrok::Wrapper.start(persistence: true) }
+                  .to raise_error(Ngrok::Error, 'ERROR: Ngrok pid #795 tunneling on other port 3000')
+              end
+            end
+          end
+
+          it 'tries fetching params of an already running Ngrok and store Ngrok process data into a file' do
+            expect(Ngrok::Wrapper).to receive(:try_params_from_running_ngrok)
+            expect(Ngrok::Wrapper).to receive(:spawn_new_ngrok).with(persistent_ngrok: true)
+            expect(File).to receive(:write)
+
+            Ngrok::Wrapper.start(persistence: true)
+          end
+        end
       end
     end
 
