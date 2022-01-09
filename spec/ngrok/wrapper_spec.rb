@@ -271,15 +271,33 @@ RSpec.describe 'Ngrok::Wrapper' do
               allow(Ngrok::Wrapper).to receive(:ngrok_process_status_lines).and_return(ngrok_ps_lines)
 
               expect(Ngrok::Wrapper).to receive(:try_params_from_running_ngrok)
-              expect(Ngrok::Wrapper).not_to receive(:spawn_new_ngrok)
+            end
+
+            describe 'when Ngrok process with params from the persisted file is running' do
+              let(:ngrok_ps_lines) do
+                ['795 ??  S   0:04.81 ngrok http -log -config /Users/thunder/.ngrok2/ngrok.yml https://localhost:3001']
+              end
+
+              it 'set Ngrok::Wrapper pid and status attributes' do
+                expect(Ngrok::Wrapper).not_to receive(:spawn_new_ngrok)
+
+                Ngrok::Wrapper.start(persistence: true)
+
+                expect(Ngrok::Wrapper.pid).to eql('795')
+                expect(Ngrok::Wrapper.status).to eql(:running)
+                expect(Ngrok::Wrapper.ngrok_url).to eql('http://b1cd-109-185-141-9.ngrok.io')
+                expect(Ngrok::Wrapper.ngrok_url_https).to eql('https://b1cd-109-185-141-9.ngrok.io')
+              end
             end
 
             describe 'when a similar Ngrok with other pid is already running' do
               let(:ngrok_ps_lines) do
-                ['71986   ??  S   0:04.81 ngrok http -config /Users/thunder/.ngrok2/ngrok.yml https://localhost:3001']
+                ['71986 ?? S  0:04.81 ngrok http -log -config /Users/thunder/.ngrok2/ngrok.yml https://localhost:3001']
               end
 
               it 'raises exception' do
+                expect(Ngrok::Wrapper).not_to receive(:spawn_new_ngrok)
+
                 expect { Ngrok::Wrapper.start(persistence: true) }
                   .to raise_error(Ngrok::Error, 'ERROR: Other ngrok instances tunneling to port 3001 found')
               end
@@ -287,12 +305,41 @@ RSpec.describe 'Ngrok::Wrapper' do
 
             describe 'when Ngrok with the persisted pid is already running, but on a different port' do
               let(:ngrok_ps_lines) do
-                ['795   ??  S   0:04.81 ngrok http -config /Users/thunder/.ngrok2/ngrok.yml https://localhost:3000']
+                ['795 ??  S   0:04.81 ngrok http -log -config /Users/thunder/.ngrok2/ngrok.yml https://localhost:3000']
               end
 
               it 'raises exception' do
+                expect(Ngrok::Wrapper).not_to receive(:spawn_new_ngrok)
+
                 expect { Ngrok::Wrapper.start(persistence: true) }
                   .to raise_error(Ngrok::Error, 'ERROR: Ngrok pid #795 tunneling on other port 3000')
+              end
+            end
+
+            describe 'when no Ngrok process with params from the persisted file or similar is running' do
+              let(:ngrok_ps_lines) do
+                ['834 ??  S   0:04.81 ngrok http -log -config /Users/thunder/.ngrok2/ngrok.yml https://localhost:5001']
+              end
+
+              let(:new_ngrok_ps_lines) do
+                ['835 ??  S   0:04.81 ngrok http -log -config /Users/thunder/.ngrok2/ngrok.yml https://localhost:3001']
+              end
+
+              it 'set Ngrok::Wrapper pid and status attributes' do
+                allow(Ngrok::Wrapper).to receive(:spawn_new_ngrok).with(persistent_ngrok: true).and_call_original
+                allow(Ngrok::Wrapper)
+                  .to receive(:ngrok_process_status_lines).with(refetch: true).and_return(new_ngrok_ps_lines)
+                allow(Ngrok::Wrapper).to receive(:fetch_urls)
+
+                expect(Ngrok::Wrapper).to receive(:spawn_new_ngrok).with(persistent_ngrok: true)
+                expect(Ngrok::Wrapper)
+                  .to receive(:ngrok_process_status_lines).with(refetch: true)  #.and_return(new_ngrok_ps_lines)
+                allow(Ngrok::Wrapper).to receive(:fetch_urls)
+
+                Ngrok::Wrapper.start(persistence: true)
+
+                expect(Ngrok::Wrapper.pid).to eql('835')
+                expect(Ngrok::Wrapper.status).to eql(:running)
               end
             end
           end
