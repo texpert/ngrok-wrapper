@@ -182,6 +182,73 @@ puts '[NGROK] inspector web interface listening at http://127.0.0.1:4040' if ENV
 NGROK_URL = Ngrok::Wrapper.ngrok_url_https
 ```
 
+## Gem Maintenance
+
+### Preparing a release
+
+Merge all the pull requests that should make it into the new release into the `main` branch, then checkout and pull the
+branch and run the `github_changelog_generator`, specifying the new version as a `--future-release` cli parameter:
+
+```
+git checkout main
+git pull
+
+github_changelog_generator -u texpert -p ngrok-wrapper --future-release v0.1.0
+```
+
+Then add the changes to `git`, commit and push the `Preparing the new release` commit directly into the `main` branch:
+
+```
+git add .
+git commit -m 'Preparing the new v0.1.0 release'
+git push
+```
+
+### RubyGems credentials
+
+Ensure you have the RubyGems credentials located in the `~/.gem/credentials` file.
+
+### Adding a gem owner
+
+```
+gem owner ngrok-wrapper -a branzeanu.aurel@gmail.com
+```
+
+### Building a new gem version
+
+Adjust the new gem version number in the `lib/ngrok/wrapper/version.rb` file. It is used when building the gem by the following command:
+
+```
+gem build ngrok-wrapper.gemspec
+```
+
+Assuming the version was set to `0.1.0`,
+a `ngrok-wrapper-0.1.0.gem` binary file will be generated at the root of the app (repo).
+
+- The binary file shouldn't be added into the `git` tree, it will be pushed into the RubyGems and to the GitHub releases
+
+### Pushing a new gem release to RubyGems
+
+```
+gem push ngrok-wrapper-0.1.0.gem # don't forget to specify the correct version number
+```
+
+### Crafting the new release on GitHub
+
+On the [Releases page](https://github.com/texpert/ngrok-wrapper/releases) push the `Draft a new release` button.
+
+The new release editing page opens, on which the following actions could be taken:
+
+- Choose the repo branch (default is `main`)
+- Insert a tag version (usually, the tag should correspond to the gem's new version, v0.1.0, for example)
+  - the tag will be created by GitHub on the last commit into the chosen branch
+- Fill the release Title and Description
+- Attach the binary file with the generated gem version
+- If the release is not yet ready for production, mark the `This is a pre-release` checkbox
+- Press either the `Publish release`, or the `Save draft button` if you want to publish it later
+  - After publishing the release, the the binary gem file will be available on GitHub and could be removed locally
+
+
 ## Contributing
 
 1. Fork it ( https://github.com/texpert/ngrok-wrapper/fork )
