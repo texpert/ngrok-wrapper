@@ -84,7 +84,7 @@ module Ngrok
       def raise_if_similar_ngroks(pid)
         other_ngrok_on_port = ngrok_process_status_lines.find do |line|
           # If found an Ngrok process with other pid, tunneling on the port, specified in Ngrok::Wrapper.start params
-          !line.start_with?(pid || '') && line.end_with?(addr.to_s)
+          line.include?('ngrok http -log') && !line.start_with?(pid || '') && line.end_with?(addr.to_s)
         end
 
         raise Ngrok::Error, "ERROR: Other ngrok instances tunneling to port #{addr} found" if other_ngrok_on_port
@@ -93,7 +93,7 @@ module Ngrok
 
         tunnel_on_other_port = ngrok_process_status_lines.find do |line|
           # If the line starts with this pid, but the port is other than specified in Ngrok::Wrapper.start params
-          line.start_with?(pid) && !line.end_with?(addr.to_s)
+          line.include?('ngrok http -log') && line.start_with?(pid) && !line.end_with?(addr.to_s)
         end
 
         return unless tunnel_on_other_port
@@ -125,7 +125,7 @@ module Ngrok
       def ngrok_running?(pid)
         ngrok_process_status_lines.find do |line|
           # If found the Ngrok process with correct pid, tunneling on the port, specified in Ngrok::Wrapper.start params
-          line.start_with?(pid) && line.end_with?(addr.to_s)
+          line.include?('ngrok http -log') && line.start_with?(pid) && line.end_with?(addr.to_s)
         end
       end
 
@@ -155,17 +155,7 @@ module Ngrok
 
       def fetch_urls
         @params[:timeout].times do
-          log_content = @params[:log].read
-          result = log_content.scan(/URL:(.+)\sProto:(http|https)\s/)
-          unless result.empty?
-            result           = Hash[*result.flatten].invert
-            @ngrok_url       = result['http']
-            @ngrok_url_https = result['https']
-            break if @ngrok_url || @ngrok_url_https
-          end
-
-          @error = log_content.scan(/msg="command failed" err="([^"]+)"/).flatten
-          break unless @error.empty?
+          break if scan_log_for_urls || !@error.empty?
 
           sleep 1
           @params[:log].rewind
@@ -178,6 +168,20 @@ module Ngrok
         raise FetchUrlError, 'Unable to fetch external url' if @error.empty?
 
         raise Ngrok::Error, @error.first
+      end
+
+      def scan_log_for_urls
+        log_content = @params[:log].read
+        result = log_content.scan(/URL:(.+)\sProto:(http|https)\s/)
+        unless result.empty?
+          result           = Hash[*result.flatten].invert
+          @ngrok_url       = result['http']
+          @ngrok_url_https = result['https']
+          return true if @ngrok_url || @ngrok_url_https
+        end
+
+        @error = log_content.scan(/msg="command failed" err="([^"]+)"/).flatten
+        false
       end
 
       def ensure_binary
