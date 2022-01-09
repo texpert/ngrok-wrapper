@@ -29,7 +29,7 @@ checks:
 plugins:
   rubocop:
     enabled: true
-    channel: 'rubocop-1-23-0'
+    channel: 'beta'
   fixme:
     enabled: true
     config:
