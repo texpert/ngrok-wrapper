@@ -85,14 +85,14 @@ RSpec.describe 'Ngrok::Wrapper' do
     end
   end
 
-  describe 'Custom subdomain' do
+  describe 'Invalid or missing authtoken' do
     describe 'when no authtoken is specified in ngrok config file' do
       let(:no_auth_log) { File.read("#{RSPEC_ROOT}/fixtures/ngrok.no_auth_token.log") }
 
       it 'raises Ngrok::Error exception' do
         allow_any_instance_of(Tempfile).to receive(:read).and_return(no_auth_log)
 
-        expect { Ngrok::Wrapper.start(subdomain: 'test-subdomain') }.to raise_error Ngrok::Error
+        expect { Ngrok::Wrapper.start }.to raise_error Ngrok::Error
       end
     end
 
@@ -103,31 +103,8 @@ RSpec.describe 'Ngrok::Wrapper' do
         allow_any_instance_of(Tempfile).to receive(:read).and_return(invalid_auth_log)
 
         expect do
-          Ngrok::Wrapper.start(subdomain: 'test-subdomain', authtoken: 'incorrect_token')
+          Ngrok::Wrapper.start(authtoken: 'incorrect_token')
         end.to raise_error Ngrok::Error
-      end
-    end
-  end
-
-  describe 'Custom hostname' do
-    describe 'when no authtoken is specified in ngrok config file' do
-      let(:no_auth_log) { File.read("#{RSPEC_ROOT}/fixtures/ngrok.no_auth_token.log") }
-
-      it 'raises Ngrok::Error exception' do
-        allow_any_instance_of(Tempfile).to receive(:read).and_return(no_auth_log)
-
-        expect { Ngrok::Wrapper.start(hostname: 'example.com') }.to raise_error Ngrok::Error
-      end
-    end
-
-    describe 'when an invalid authtoken is specified in ngrok config file' do
-      let(:invalid_auth_log) { File.read("#{RSPEC_ROOT}/fixtures/ngrok.no_auth_token.log") }
-
-      it 'raises Ngrok::Error exception' do
-        allow_any_instance_of(Tempfile).to receive(:read).and_return(invalid_auth_log)
-
-        expect { Ngrok::Wrapper.start(hostname: 'example.com', authtoken: 'incorrect_token') }
-          .to raise_error Ngrok::Error
       end
     end
   end
@@ -249,8 +226,10 @@ RSpec.describe 'Ngrok::Wrapper' do
         describe 'when fetching params returns nil' do
           let(:state) { nil }
 
-          it 'tries fetching params of an already running Ngrok and store Ngrok process data into a file' do
+          it "doesn't check for similar ngroks running" do
             expect(Ngrok::Wrapper).to receive(:try_params_from_running_ngrok)
+            expect(Ngrok::Wrapper).not_to receive(:raise_if_similar_ngroks)
+            expect(Ngrok::Wrapper).not_to receive(:ngrok_running?)
             expect(Ngrok::Wrapper).to receive(:spawn_new_ngrok).with(persistent_ngrok: true)
             expect(File).to receive(:write)
 
@@ -325,7 +304,7 @@ RSpec.describe 'Ngrok::Wrapper' do
                 ['835 ??  S   0:04.81 ngrok http -log -config /Users/thunder/.ngrok2/ngrok.yml https://localhost:3001']
               end
 
-              it 'set Ngrok::Wrapper pid and status attributes' do
+              it 'sets Ngrok::Wrapper pid and status attributes' do
                 allow(Ngrok::Wrapper).to receive(:spawn_new_ngrok).with(persistent_ngrok: true).and_call_original
                 allow(Ngrok::Wrapper)
                   .to receive(:ngrok_process_status_lines).with(refetch: true).and_return(new_ngrok_ps_lines)
