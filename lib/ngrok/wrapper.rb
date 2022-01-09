@@ -82,14 +82,21 @@ module Ngrok
       end
 
       def raise_if_similar_ngroks(pid)
-        other_similar_ngroks = ngrok_process_status_lines.select do |line|
+        other_ngrok_on_port = ngrok_process_status_lines.find do |line|
           # If the pid is not nil and the line starts with this pid, do not take this line into account
-          !(pid && line.start_with?(pid)) && line.include?('ngrok http') && line.end_with?(addr.to_s)
+          !(pid && line.start_with?(pid)) && line.end_with?(addr.to_s)
         end
 
-        return if other_similar_ngroks.empty?
+        raise Ngrok::Error, "ERROR: Other ngrok instances tunneling to port #{addr} found" if other_ngrok_on_port
 
-        raise Ngrok::Error, "ERROR: Other ngrok instances tunneling to port #{addr} found"
+        tunnel_on_other_port = ngrok_process_status_lines.find do |line|
+          # If the pid is not nil and the line starts with this pid, do not take this line into account
+          pid && line.start_with?(pid) && !line.end_with?(addr.to_s)
+        end
+
+        return unless tunnel_on_other_port
+
+        raise Ngrok::Error, "ERROR: Ngrok pid ##{pid} tunneling on other port #{tunnel_on_other_port.split(':').last}"
       end
 
       def ngrok_process_status_lines(refetch: false)
@@ -101,7 +108,8 @@ module Ngrok
       def try_params_from_running_ngrok
         @persistence_file = @params[:persistence_file] || "#{File.dirname(@params[:config])}/ngrok-process.json"
         state = parse_persistence_file
-        pid = state&.[]('pid')
+        return unless (pid = state&.[]('pid'))
+
         raise_if_similar_ngroks(pid)
 
         return unless ngrok_running?(pid)
