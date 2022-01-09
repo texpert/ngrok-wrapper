@@ -4,6 +4,8 @@ require_relative 'wrapper/version'
 require 'tempfile'
 
 module Ngrok
+  OPTIONAL_PARAMS = %i[authtoken bind_tls host_header hostname inspect region subdomain].freeze
+
   class NotFound < StandardError; end
   class FetchUrlError < StandardError; end
   class Error < StandardError; end
@@ -133,13 +135,9 @@ module Ngrok
 
       def ngrok_exec_params
         exec_params = +'-log=stdout -log-level=debug '
-        exec_params << "-bind-tls=#{@params[:bind_tls]} " if @params.key? :bind_tls
-        exec_params << "-region=#{@params[:region]} " if @params[:region]
-        exec_params << "-host-header=#{@params[:host_header]} " if @params[:host_header]
-        exec_params << "-authtoken=#{@params[:authtoken]} " if @params[:authtoken]
-        exec_params << "-subdomain=#{@params[:subdomain]} " if @params[:subdomain]
-        exec_params << "-hostname=#{@params[:hostname]} " if @params[:hostname]
-        exec_params << "-inspect=#{@params[:inspect]} " if @params.key? :inspect
+        OPTIONAL_PARAMS.each do |opt|
+          exec_params << "-#{opt.to_s.tr('_', '-')}=#{@params[opt]} " if @params.key?(opt)
+        end
         exec_params << "-config #{@params[:config]} #{@params[:addr]} > #{@params[:log].path}"
       end
 
