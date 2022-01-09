@@ -241,7 +241,7 @@ RSpec.describe 'Ngrok::Wrapper' do
           let(:state) do
             { 'pid'             => '795',
               'ngrok_url'       => 'http://b1cd-109-185-141-9.ngrok.io',
-              'ngrok_url_https' => 'https://b1cd-109-185-141-9.ngrok.io' }
+              'ngrok_url_https' => 'https://b1cd-109-185-141-9.ngrok.io'}
           end
 
           describe 'checking if a similar Ngrok is running' do
