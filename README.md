@@ -140,6 +140,7 @@ end
 
 ```ruby
 config.force_ssl = true if NGROK_ENABLED
+config.hosts << '.ngrok.io' if NGROK_ENABLED # for Rails >= 6.0.0
 
 config.action_mailer.default_url_options = {
   host: NGROK_ENABLED ? NGROK_URL.delete_prefix('https://') : 'myapp.local',
