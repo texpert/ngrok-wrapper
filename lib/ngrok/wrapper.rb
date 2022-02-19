@@ -93,7 +93,7 @@ module Ngrok
 
         tunnel_on_other_port = ngrok_process_status_lines.find do |line|
           # If the line starts with this pid, but the port is other than specified in Ngrok::Wrapper.start params
-          line.include?('ngrok http -log') && line.start_with?(pid || '') && !line.end_with?(addr.to_s)
+          line.include?('ngrok http -log') && line.start_with?(pid) && !line.end_with?(addr.to_s)
         end
 
         return unless tunnel_on_other_port
