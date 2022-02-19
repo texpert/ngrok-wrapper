@@ -104,7 +104,7 @@ module Ngrok
       def ngrok_process_status_lines(refetch: false)
         return @ngrok_process_status_lines if defined?(@ngrok_process_status_lines) && !refetch
 
-        @ngrok_process_status_lines = (`ps ax | grep "ngrok http"`).split("\n")
+        @ngrok_process_status_lines = (`ps ax | grep "ngrok http"`).split("\n").map(&:strip)
       end
 
       def try_params_from_running_ngrok
@@ -134,7 +134,13 @@ module Ngrok
         # Prepare the log file into which ngrok output will be redirected in `ngrok_exec_params`
         @params[:log] = @params[:log] ? File.open(@params[:log], 'w+') : Tempfile.new('ngrok')
         if persistent_ngrok
-          Process.spawn("exec nohup ngrok http #{ngrok_exec_params} &")
+          fork do
+            Process.setsid
+            system("exec nohup ngrok http #{ngrok_exec_params} &")
+          end
+
+          sleep 0.5
+
           @pid = ngrok_process_status_lines(refetch: true)
                  .find { |line| line.include?('ngrok http -log') && line.end_with?(addr.to_s) }.split[0]
         else
