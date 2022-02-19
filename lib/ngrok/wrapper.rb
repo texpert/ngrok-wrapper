@@ -83,7 +83,6 @@ module Ngrok
 
       def raise_if_similar_ngroks(pid)
         other_ngrok_on_port = ngrok_process_status_lines.find do |line|
-          line.strip!
           # If found an Ngrok process with other pid, tunneling on the port, specified in Ngrok::Wrapper.start params
           line.include?('ngrok http -log') && !line.start_with?(pid || '') && line.end_with?(addr.to_s)
         end
@@ -105,7 +104,7 @@ module Ngrok
       def ngrok_process_status_lines(refetch: false)
         return @ngrok_process_status_lines if defined?(@ngrok_process_status_lines) && !refetch
 
-        @ngrok_process_status_lines = (`ps ax | grep "ngrok http"`).split("\n")
+        @ngrok_process_status_lines = (`ps ax | grep "ngrok http"`).split("\n").map(&:strip)
       end
 
       def try_params_from_running_ngrok
