@@ -306,13 +306,14 @@ RSpec.describe 'Ngrok::Wrapper' do
 
               it 'sets Ngrok::Wrapper pid and status attributes' do
                 allow(Ngrok::Wrapper).to receive(:spawn_new_ngrok).with(persistent_ngrok: true).and_call_original
+                allow(Ngrok::Wrapper).to receive(:fork).and_call_original
                 allow(Ngrok::Wrapper)
                   .to receive(:ngrok_process_status_lines).with(refetch: true).and_return(new_ngrok_ps_lines)
                 allow(Ngrok::Wrapper).to receive(:fetch_urls)
 
                 expect(Ngrok::Wrapper).to receive(:spawn_new_ngrok).with(persistent_ngrok: true)
-                expect(Ngrok::Wrapper)
-                  .to receive(:ngrok_process_status_lines).with(refetch: true)
+                expect(Ngrok::Wrapper).to receive(:fork)
+                expect(Ngrok::Wrapper).to receive(:ngrok_process_status_lines).with(refetch: true)
                 allow(Ngrok::Wrapper).to receive(:fetch_urls)
 
                 Ngrok::Wrapper.start(persistence: true)
