@@ -260,12 +260,13 @@ RSpec.describe 'Ngrok::Wrapper' do
               it 'set Ngrok::Wrapper pid and status attributes' do
                 expect(Ngrok::Wrapper).not_to receive(:spawn_new_ngrok)
 
-                Ngrok::Wrapper.start(persistence: true)
+                result = Ngrok::Wrapper.start(persistence: true)
 
                 expect(Ngrok::Wrapper.pid).to eql('795')
                 expect(Ngrok::Wrapper.status).to eql(:running)
                 expect(Ngrok::Wrapper.ngrok_url).to eql('http://b1cd-109-185-141-9.ngrok.io')
                 expect(Ngrok::Wrapper.ngrok_url_https).to eql('https://b1cd-109-185-141-9.ngrok.io')
+                expect(result).to eql('https://b1cd-109-185-141-9.ngrok.io')
               end
             end
 
