@@ -138,6 +138,7 @@ module Ngrok
 
       def ngrok_running?(pid)
         ngrok_process_status_lines.find do |line|
+          line.strip!
           # If found the Ngrok process with correct pid, tunneling on the port, specified in Ngrok::Wrapper.start params
           line.include?('ngrok http -log') && line.start_with?(pid) && line.end_with?(addr.to_s)
         end
