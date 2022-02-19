@@ -38,7 +38,7 @@ module Ngrok
           File.write(@persistence_file, { pid: @pid, ngrok_url: @ngrok_url, ngrok_url_https: @ngrok_url_https }.to_json)
         end
 
-        @ngrok_url
+        @ngrok_url_https || @ngrok_url
       end
 
       def stop
