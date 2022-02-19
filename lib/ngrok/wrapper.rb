@@ -83,15 +83,9 @@ module Ngrok
 
       def raise_if_similar_ngroks(pid)
         other_ngrok_on_port = ngrok_process_status_lines.find do |line|
+          line.strip!
           # If found an Ngrok process with other pid, tunneling on the port, specified in Ngrok::Wrapper.start params
-
-          puts "line = #{line}"
-          puts "line.include?('ngrok http -log') = #{line.include?('ngrok http -log')}"
-          puts "pid = #{pid}"
-          puts "!line.start_with?(pid) = #{!line.strip.start_with?(pid || '')}"
-          puts "addr = #{addr}"
-          puts "line.end_with?(addr.to_s) = #{line.end_with?(addr.to_s)}"
-          line.strip.include?('ngrok http -log') && !line.strip.start_with?(pid || '') && line.end_with?(addr.to_s)
+          line.include?('ngrok http -log') && !line.start_with?(pid || '') && line.end_with?(addr.to_s)
         end
 
         raise Ngrok::Error, "ERROR: Other ngrok instances tunneling to port #{addr} found" if other_ngrok_on_port
@@ -100,14 +94,7 @@ module Ngrok
 
         tunnel_on_other_port = ngrok_process_status_lines.find do |line|
           # If the line starts with this pid, but the port is other than specified in Ngrok::Wrapper.start params
-          puts "line = #{line}"
-          puts "line.include?('ngrok http -log') = #{line.include?('ngrok http -log')}"
-          puts "pid = #{pid}"
-          puts "line.start_with?(pid) = #{line.start_with?(pid || '')}"
-          puts "addr = #{addr}"
-          puts "!line.end_with?(addr.to_s) = #{!line.end_with?(addr.to_s)}"
-
-          line.include?('ngrok http -log') && line.strip.start_with?(pid || '') && !line.end_with?(addr.to_s)
+          line.include?('ngrok http -log') && line.start_with?(pid || '') && !line.end_with?(addr.to_s)
         end
 
         return unless tunnel_on_other_port
@@ -138,7 +125,6 @@ module Ngrok
 
       def ngrok_running?(pid)
         ngrok_process_status_lines.find do |line|
-          line.strip!
           # If found the Ngrok process with correct pid, tunneling on the port, specified in Ngrok::Wrapper.start params
           line.include?('ngrok http -log') && line.start_with?(pid) && line.end_with?(addr.to_s)
         end
