@@ -88,7 +88,7 @@ module Ngrok
           puts "line = #{line}"
           puts "line.include?('ngrok http -log') = #{line.include?('ngrok http -log')}"
           puts "pid = #{pid}"
-          puts "!line.start_with?(pid) = #{!line.strip.start_with?(pid)}"
+          puts "!line.start_with?(pid) = #{!line.strip.start_with?(pid || '')}"
           puts "addr = #{addr}"
           puts "line.end_with?(addr.to_s) = #{line.end_with?(addr.to_s)}"
           line.strip.include?('ngrok http -log') && !line.strip.start_with?(pid || '') && line.end_with?(addr.to_s)
@@ -103,11 +103,11 @@ module Ngrok
           puts "line = #{line}"
           puts "line.include?('ngrok http -log') = #{line.include?('ngrok http -log')}"
           puts "pid = #{pid}"
-          puts "line.start_with?(pid) = #{line.start_with?(pid)}"
+          puts "line.start_with?(pid) = #{line.start_with?(pid || '')}"
           puts "addr = #{addr}"
           puts "!line.end_with?(addr.to_s) = #{!line.end_with?(addr.to_s)}"
 
-          line.include?('ngrok http -log') && line.strip.start_with?(pid) && !line.end_with?(addr.to_s)
+          line.include?('ngrok http -log') && line.strip.start_with?(pid || '') && !line.end_with?(addr.to_s)
         end
 
         return unless tunnel_on_other_port
