@@ -1,5 +1,23 @@
 # Changelog
 
+## [v0.2.0](https://github.com/texpert/ngrok-wrapper/tree/v0.2.0) (2022-02-19)
+
+### Making Ngrok process survive server stop on Linux
+
+It was working OK on Mac OS on the 0.1.0 release, but not on Linux.
+
+It came out that `Process.setsid` should be applied to the spawned process to establish this process as a new session 
+and process group leader. This is completely detaching it from the parent process, so it won't be killed when the 
+parent will go down.
+
+[Full Changelog](https://github.com/texpert/ngrok-wrapper/compare/v0.1.0...v0.2.0)
+
+**Merged pull requests:**
+
+- Add config.hosts example for Rails \>= 6.0.0 [\#18](https://github.com/texpert/ngrok-wrapper/pull/18) ([texpert](https://github.com/texpert))
+- Ngrok.start should try to return first @ngrok\_url\_https or then @ngrok\_url [\#17](https://github.com/texpert/ngrok-wrapper/pull/17) ([texpert](https://github.com/texpert))
+- Use fork, Process.setsid and spawn instead of just spawn, to change the owner of ngrok process [\#16](https://github.com/texpert/ngrok-wrapper/pull/16) ([texpert](https://github.com/texpert))
+
 ## [v0.1.0](https://github.com/texpert/ngrok-wrapper/tree/v0.1.0) (2022-01-09)
 
 [Full Changelog](https://github.com/texpert/ngrok-wrapper/compare/3e032fa019c91ee7338a7ad3a3335e6c5597b394...v0.1.0)
