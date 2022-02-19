@@ -134,11 +134,13 @@ module Ngrok
         # Prepare the log file into which ngrok output will be redirected in `ngrok_exec_params`
         @params[:log] = @params[:log] ? File.open(@params[:log], 'w+') : Tempfile.new('ngrok')
         if persistent_ngrok
-          # Process.spawn("exec nohup ngrok http #{ngrok_exec_params} &")
+          fork do
+            Process.setsid
+            system("exec nohup ngrok http #{ngrok_exec_params} &")
+          end
 
-          `nohup ngrok http #{ngrok_exec_params} &`
-          # pid = spawn("ngrok http #{ngrok_exec_params}")
-          # Process.detach(pid)
+          sleep 0.5
+
           @pid = ngrok_process_status_lines(refetch: true)
                  .find { |line| line.include?('ngrok http -log') && line.end_with?(addr.to_s) }.split[0]
         else
