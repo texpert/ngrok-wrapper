@@ -136,7 +136,7 @@ module Ngrok
         if persistent_ngrok
           # Process.spawn("exec nohup ngrok http #{ngrok_exec_params} &")
 
-          system("nohup ngrok http #{ngrok_exec_params} &")
+          `nohup ngrok http #{ngrok_exec_params} &`
           # pid = spawn("ngrok http #{ngrok_exec_params}")
           # Process.detach(pid)
           @pid = ngrok_process_status_lines(refetch: true)
