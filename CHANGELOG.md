@@ -1,6 +1,24 @@
 # Changelog
 
+## [v0.3.0](https://github.com/texpert/ngrok-wrapper/tree/v0.3.0) (2022-11-19)
+
+[Full Changelog](https://github.com/texpert/ngrok-wrapper/compare/v0.2.0...v0.3.0)
+
+Both Ngrok v2, and v3 are now supported.
+
+Tested and working on Ubuntu Linux and macOS.
+
+**Merged pull requests:**
+
+- Added compatibility with Ngrok v3.x \(specs also enhanced to test both 2 and 3 versions\) [\#24](https://github.com/texpert/ngrok-wrapper/pull/24) ([texpert](https://github.com/texpert))
+- Prepare for different ngrok versions params, still for version 2 [\#23](https://github.com/texpert/ngrok-wrapper/pull/23) ([texpert](https://github.com/texpert))
+- Allow region subdomains - modify Rails config.hosts example to parse the host from NGROK\_URL [\#22](https://github.com/texpert/ngrok-wrapper/pull/22) ([texpert](https://github.com/texpert))
+- Set main Ruby version to 2.7.6 [\#21](https://github.com/texpert/ngrok-wrapper/pull/21) ([texpert](https://github.com/texpert))
+- Bump actions/checkout from 2 to 3 [\#19](https://github.com/texpert/ngrok-wrapper/pull/19) ([texpert](https://github.com/texpert))
+
 ## [v0.2.0](https://github.com/texpert/ngrok-wrapper/tree/v0.2.0) (2022-02-19)
+
+[Full Changelog](https://github.com/texpert/ngrok-wrapper/compare/v0.1.0...v0.2.0)
 
 ### Making Ngrok process survive server stop on Linux
 
@@ -10,7 +28,6 @@ It came out that `Process.setsid` should be applied to the spawned process to es
 and process group leader. This is completely detaching it from the parent process, so it won't be killed when the 
 parent will go down.
 
-[Full Changelog](https://github.com/texpert/ngrok-wrapper/compare/v0.1.0...v0.2.0)
 
 **Merged pull requests:**
 
