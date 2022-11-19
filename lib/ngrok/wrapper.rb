@@ -8,6 +8,10 @@ module Ngrok
     '2' => {
       flag_prefix:       '-',
       http_tunnel_flags: %i[config authtoken bind_tls host_header hostname inspect region subdomain].freeze
+    },
+    '3' => {
+      flag_prefix:       '--',
+      http_tunnel_flags: %i[config authtoken scheme host_header hostname inspect region subdomain].freeze
     }
   }.freeze
 
@@ -29,6 +33,9 @@ module Ngrok
 
       def start(params = {})
         ensure_binary
+        @current_version_params = VERSION_PARAMS[@major_version]
+        @flag_prefix = @current_version_params[:flag_prefix]
+
         init(params)
 
         persistent_ngrok = @params[:persistence] == true
@@ -89,7 +96,7 @@ module Ngrok
       def raise_if_similar_ngroks(pid)
         other_ngrok_on_port = ngrok_process_status_lines.find do |line|
           # If found an Ngrok process with other pid, tunneling on the port, specified in Ngrok::Wrapper.start params
-          line.include?('ngrok http -log') && !line.start_with?(pid || '') && line.end_with?(addr.to_s)
+          line.include?("ngrok http #{@flag_prefix}log") && !line.start_with?(pid || '') && line.end_with?(addr.to_s)
         end
 
         raise Ngrok::Error, "ERROR: Other ngrok instances tunneling to port #{addr} found" if other_ngrok_on_port
@@ -98,7 +105,7 @@ module Ngrok
 
         tunnel_on_other_port = ngrok_process_status_lines.find do |line|
           # If the line starts with this pid, but the port is other than specified in Ngrok::Wrapper.start params
-          line.include?('ngrok http -log') && line.start_with?(pid) && !line.end_with?(addr.to_s)
+          line.include?("ngrok http #{@flag_prefix}log") && line.start_with?(pid) && !line.end_with?(addr.to_s)
         end
 
         return unless tunnel_on_other_port
@@ -130,7 +137,7 @@ module Ngrok
       def ngrok_running?(pid)
         ngrok_process_status_lines.find do |line|
           # If found the Ngrok process with correct pid, tunneling on the port, specified in Ngrok::Wrapper.start params
-          line.include?('ngrok http -log') && line.start_with?(pid) && line.end_with?(addr.to_s)
+          line.include?("ngrok http #{@flag_prefix}log") && line.start_with?(pid) && line.end_with?(addr.to_s)
         end
       end
 
@@ -147,7 +154,7 @@ module Ngrok
           sleep 0.5
 
           @pid = ngrok_process_status_lines(refetch: true)
-                 .find { |line| line.include?('ngrok http -log') && line.end_with?(addr.to_s) }.split[0]
+                 .find { |line| line.include?("ngrok http #{@flag_prefix}log") && line.end_with?(addr.to_s) }.split[0]
         else
           @pid = Process.spawn("exec ngrok http #{ngrok_exec_params}")
           at_exit { Ngrok::Wrapper.stop }
@@ -157,11 +164,9 @@ module Ngrok
       end
 
       def ngrok_exec_params
-        current_version_params = VERSION_PARAMS[@major_version]
-        flag_prefix = current_version_params[:flag_prefix]
-        exec_params = +"#{flag_prefix}log=stdout #{flag_prefix}log-level=debug "
-        current_version_params[:http_tunnel_flags].each do |flag|
-          exec_params << "#{flag_prefix}#{flag.to_s.tr('_', '-')}=#{@params[flag]} " if @params.key?(flag)
+        exec_params = +"#{@flag_prefix}log=stdout #{@flag_prefix}log-level=debug "
+        @current_version_params[:http_tunnel_flags].each do |flag|
+          exec_params << "#{@flag_prefix}#{flag.to_s.tr('_', '-')}=#{@params[flag]} " if @params.key?(flag)
         end
         exec_params << " #{@params[:addr]} > #{@params[:log].path}"
       end
