@@ -4,7 +4,12 @@ require_relative 'wrapper/version'
 require 'tempfile'
 
 module Ngrok
-  OPTIONAL_PARAMS = %i[authtoken bind_tls host_header hostname inspect region subdomain].freeze
+  VERSION_PARAMS = {
+    '2' => {
+      flag_prefix:       '-',
+      http_tunnel_flags: %i[config authtoken bind_tls host_header hostname inspect region subdomain].freeze
+    }
+  }.freeze
 
   class NotFound < StandardError; end
   class FetchUrlError < StandardError; end
@@ -152,11 +157,13 @@ module Ngrok
       end
 
       def ngrok_exec_params
-        exec_params = +'-log=stdout -log-level=debug '
-        OPTIONAL_PARAMS.each do |opt|
-          exec_params << "-#{opt.to_s.tr('_', '-')}=#{@params[opt]} " if @params.key?(opt)
+        current_version_params = VERSION_PARAMS[@major_version]
+        flag_prefix = current_version_params[:flag_prefix]
+        exec_params = +"#{flag_prefix}log=stdout #{flag_prefix}log-level=debug "
+        current_version_params[:http_tunnel_flags].each do |flag|
+          exec_params << "#{flag_prefix}#{flag.to_s.tr('_', '-')}=#{@params[flag]} " if @params.key?(flag)
         end
-        exec_params << "-config #{@params[:config]} #{@params[:addr]} > #{@params[:log].path}"
+        exec_params << " #{@params[:addr]} > #{@params[:log].path}"
       end
 
       def fetch_urls
@@ -191,7 +198,7 @@ module Ngrok
       end
 
       def ensure_binary
-        `ngrok version`
+        @major_version, * = `ngrok version`.chomp.delete_prefix('ngrok version ').split('.')
       rescue Errno::ENOENT
         raise Ngrok::NotFound, 'Ngrok binary not found'
       end
