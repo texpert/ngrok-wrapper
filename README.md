@@ -1,6 +1,6 @@
 # Ngrok::Wrapper
 
-Ngrok-wrapper gem is a ruby wrapper for ngrok v2.
+Ngrok-wrapper gem is a ruby wrapper for ngrok v2.x or v3.x.
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/d978e217a8219326e325/maintainability)](https://codeclimate.com/github/texpert/ngrok-wrapper/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/d978e217a8219326e325/test_coverage)](https://codeclimate.com/github/texpert/ngrok-wrapper/test_coverage)
