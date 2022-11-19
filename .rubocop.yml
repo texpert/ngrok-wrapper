@@ -65,8 +65,14 @@ Metrics/BlockLength:
 RSpec/MultipleExpectations:
   Max: 13
 
-RSpec/NestedGroups:
+RSpec/MultipleMemoizedHelpers:
+  Description: Checks if example groups contain too many `let` and `subject` calls.
+  Enabled: true
+  AllowSubject: true
   Max: 7
+
+RSpec/NestedGroups:
+  Max: 8
 
 Style/StringLiterals:
   ConsistentQuotesInMultiline: true

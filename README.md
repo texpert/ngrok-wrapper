@@ -1,6 +1,6 @@
 # Ngrok::Wrapper
 
-Ngrok-wrapper gem is a ruby wrapper for ngrok v2.
+Ngrok-wrapper gem is a ruby wrapper for ngrok v2.x or v3.x.
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/d978e217a8219326e325/maintainability)](https://codeclimate.com/github/texpert/ngrok-wrapper/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/d978e217a8219326e325/test_coverage)](https://codeclimate.com/github/texpert/ngrok-wrapper/test_coverage)
@@ -22,7 +22,9 @@ So, excuse me, [Anton Bogdanovich](https://github.com/bogdanovich), but I've dec
 
 ## Installation
 
-*Note:* You must have ngrok v2+ installed available in your `PATH`.
+**Pre-requisites:** You must have `ngrok` v2+ or v3+ installed available in your `PATH`.
+
+**Upgrade Note:** Do not forget to run `ngrok config upgrade` after upgrading `ngrok` from v2.x to v3.x 
 
 Add this line to your application's Gemfile:
 
@@ -32,7 +34,7 @@ gem 'ngrok-wrapper'
 
 And then execute:
 
-    $ bundle
+    $ bundle install
 
 Or install it yourself as:
 
