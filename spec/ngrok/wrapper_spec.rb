@@ -5,6 +5,7 @@ RSpec.describe 'Ngrok::Wrapper' do
   let(:fake_pid) { rand(99_999) }
 
   before do
+    Ngrok::Wrapper.instance_variable_set(:@major_version, '2')
     allow(Ngrok::Wrapper).to receive(:ensure_binary)
     allow(Ngrok::Wrapper).to receive(:raise_if_similar_ngroks)
     allow(Process).to receive(:spawn).and_return(fake_pid)
