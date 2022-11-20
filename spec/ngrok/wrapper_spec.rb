@@ -21,7 +21,7 @@ RSpec.describe 'Ngrok::Wrapper' do
       end
 
       it 'has a version number' do
-        expect(Ngrok::Wrapper::VERSION).not_to be nil
+        expect(Ngrok::Wrapper::VERSION).not_to be_nil
       end
 
       describe 'Before start' do
@@ -87,10 +87,10 @@ RSpec.describe 'Ngrok::Wrapper' do
 
         it 'uses custom log file' do
           Ngrok::Wrapper.start(log: 'test.log')
-          expect(Ngrok::Wrapper.running?).to eq true
+          expect(Ngrok::Wrapper.running?).to be_truthy
           expect(Ngrok::Wrapper.params[:log].path).to eq 'test.log'
           Ngrok::Wrapper.stop
-          expect(Ngrok::Wrapper.stopped?).to eq true
+          expect(Ngrok::Wrapper.stopped?).to be_truthy
         end
       end
 
