@@ -116,7 +116,7 @@ module Ngrok
       def ngrok_process_status_lines(refetch: false)
         return @ngrok_process_status_lines if defined?(@ngrok_process_status_lines) && !refetch
 
-        @ngrok_process_status_lines = (`ps ax | grep "ngrok http"`).split("\n").map(&:strip)
+        @ngrok_process_status_lines = `ps ax | grep "ngrok http"`.split("\n").map(&:strip)
       end
 
       def try_params_from_running_ngrok
