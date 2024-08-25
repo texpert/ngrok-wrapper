@@ -1,10 +1,33 @@
 # Changelog
 
+## [v0.3.1](https://github.com/texpert/ngrok-wrapper/tree/v0.3.1) (2024-08-25)
+
+[Full Changelog](https://github.com/texpert/ngrok-wrapper/compare/v0.3.0...v0.3.1)
+
+### Maintenance release
+
+Ruby, Rubocop, and CI upgrades
+
+**Closed issues:**
+
+- Config error with Ngrok v3.3.3 [\#31](https://github.com/texpert/ngrok-wrapper/issues/31)
+- The ngrok agent \(v3\) only accepts long name flags prefixed with -- and will error if a single hyphen is used [\#20](https://github.com/texpert/ngrok-wrapper/issues/20)
+
+**Merged pull requests:**
+
+- Upgrade paambaati/codeclimate-action to version 9 [\#34](https://github.com/texpert/ngrok-wrapper/pull/34) ([texpert](https://github.com/texpert))
+- Upgrade actions/checkout to version 4 [\#33](https://github.com/texpert/ngrok-wrapper/pull/33) ([texpert](https://github.com/texpert))
+- Restrict Ruby minimal version to 3.1 [\#32](https://github.com/texpert/ngrok-wrapper/pull/32) ([texpert](https://github.com/texpert))
+- Bump actions/checkout to 3.5.0 [\#30](https://github.com/texpert/ngrok-wrapper/pull/30) ([texpert](https://github.com/texpert))
+- Bump actions/checkout to 3.3.0 [\#29](https://github.com/texpert/ngrok-wrapper/pull/29) ([texpert](https://github.com/texpert))
+- Bump main Ruby version to 2.7.7 [\#28](https://github.com/texpert/ngrok-wrapper/pull/28) ([texpert](https://github.com/texpert))
+- Fix Code Climate issues [\#27](https://github.com/texpert/ngrok-wrapper/pull/27) ([texpert](https://github.com/texpert))
+
 ## [v0.3.0](https://github.com/texpert/ngrok-wrapper/tree/v0.3.0) (2022-11-19)
 
 [Full Changelog](https://github.com/texpert/ngrok-wrapper/compare/v0.2.0...v0.3.0)
 
-Both Ngrok v2, and v3 are now supported.
+### Both Ngrok v2, and v3 are now supported.
 
 Tested and working on Ubuntu Linux and macOS.
 

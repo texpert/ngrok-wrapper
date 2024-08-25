@@ -50,32 +50,32 @@ Ngrok::Wrapper.start
 
 # ngrok local_port
 Ngrok::Wrapper.port
-=> 3001
+# => 3001
 
 # ngrok external url
 Ngrok::Wrapper.ngrok_url
-=> "http://aaa0e65.ngrok.io"
+# => "http://aaa0e65.ngrok.io"
 
 Ngrok::Wrapper.ngrok_url_https
-=> "https://aaa0e65.ngrok.io"
+# => "https://aaa0e65.ngrok.io"
 
 Ngrok::Wrapper.running?
-=> true
+# => true
 
 Ngrok::Wrapper.stopped?
-=> false
+# => false
 
 # ngrok process id
 Ngrok::Wrapper.pid
-=> 27384
+# => 27384
 
 # ngrok log file descriptor
 Ngrok::Wrapper.log
-=> #<File:/tmp/ngrok20141022-27376-cmmiq4>
+# => #<File:/tmp/ngrok20141022-27376-cmmiq4>
 
 # kill ngrok
 Ngrok::Wrapper.stop
-=> :stopped
+# => :stopped
 
 ```
 
@@ -200,6 +200,7 @@ git pull
 
 github_changelog_generator -u texpert -p ngrok-wrapper --future-release v0.1.0
 ```
+Adjust the new gem version number in the `lib/ngrok/wrapper/version.rb` file.
 
 Then add the changes to `git`, commit and push the `Preparing the new release` commit directly into the `main` branch:
 
@@ -221,7 +222,8 @@ gem owner ngrok-wrapper -a branzeanu.aurel@gmail.com
 
 ### Building a new gem version
 
-Adjust the new gem version number in the `lib/ngrok/wrapper/version.rb` file. It is used when building the gem by the following command:
+Check if the new gem version number in the `lib/ngrok/wrapper/version.rb` file has been specified. 
+It is used when building the gem by the following command:
 
 ```
 gem build ngrok-wrapper.gemspec
