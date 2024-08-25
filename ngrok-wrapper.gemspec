@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.summary = 'Ngrok-wrapper gem is a ruby wrapper for ngrok2'
   spec.description = 'Ngrok-wrapper gem is a ruby wrapper for ngrok2'
   spec.homepage = 'https://github.com/texpert/ngrok-wrapper'
-  spec.required_ruby_version = '>= 2.6.0'
+  spec.required_ruby_version = '>= 3.1.0'
   spec.license = 'MIT'
 
   spec.metadata['rubygems_mfa_required'] = 'true'
@@ -26,11 +26,4 @@ Gem::Specification.new do |spec|
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
   spec.files         = `git ls-files -z`.split("\x0")
   spec.require_paths = ['lib']
-
-  spec.add_development_dependency 'github_changelog_generator'
-  spec.add_development_dependency 'rake'
-  spec.add_development_dependency 'rspec'
-  spec.add_development_dependency 'rubocop'
-  spec.add_development_dependency 'rubocop-performance'
-  spec.add_development_dependency 'rubocop-rspec'
 end

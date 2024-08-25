@@ -42,7 +42,7 @@ module Ngrok
         # Attempt to read the attributes of an existing process instead of starting a new process.
         try_params_from_running_ngrok if persistent_ngrok
 
-        spawn_new_ngrok(persistent_ngrok: persistent_ngrok) if stopped?
+        spawn_new_ngrok(persistent_ngrok:) if stopped?
 
         @status = :running
         if persistent_ngrok
