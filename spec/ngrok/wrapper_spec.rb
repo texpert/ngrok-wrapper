@@ -125,19 +125,19 @@ RSpec.describe 'Ngrok::Wrapper' do
 
         it 'maps port param to addr' do
           port = 10_010
-          Ngrok::Wrapper.start(port: port)
+          Ngrok::Wrapper.start(port:)
           expect(Ngrok::Wrapper.addr).to eq port
         end
 
         it 'returns just the port when the address contains a host' do
           addr = '192.168.0.5:10010'
-          Ngrok::Wrapper.start(addr: addr)
+          Ngrok::Wrapper.start(addr:)
           expect(Ngrok::Wrapper.port).to eq 10_010
         end
 
         it 'supports remote addresses' do
           addr = '192.168.0.5:10010'
-          Ngrok::Wrapper.start(addr: addr)
+          Ngrok::Wrapper.start(addr:)
           expect(Ngrok::Wrapper.addr).to eq addr
         end
       end
@@ -154,7 +154,7 @@ RSpec.describe 'Ngrok::Wrapper' do
 
         it 'includes the -region parameter with the correct value when it is provided' do
           region = 'eu'
-          Ngrok::Wrapper.start(region: region)
+          Ngrok::Wrapper.start(region:)
           expect(Ngrok::Wrapper.__send__(:ngrok_exec_params)).to include("-region=#{region}")
         end
       end
@@ -198,7 +198,7 @@ RSpec.describe 'Ngrok::Wrapper' do
         it 'includes the -host-header parameter with the correct value when it is provided' do
           expect(Ngrok::Wrapper).to receive(:fetch_urls)
           host_header = 'foo.bar'
-          Ngrok::Wrapper.start(host_header: host_header)
+          Ngrok::Wrapper.start(host_header:)
           expect(Ngrok::Wrapper.__send__(:ngrok_exec_params)).to include("-host-header=#{host_header}")
         end
       end

@@ -13,13 +13,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby: 2.6
-
-          - ruby: 2.7
-
-          - ruby: 3.0
-
           - ruby: 3.1
+          - ruby: 3.2
+          - ruby: 3.3
+          - ruby: head
 
     name: ruby ${{ matrix.ruby }}
 

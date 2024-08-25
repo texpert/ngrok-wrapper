@@ -15,6 +15,9 @@ RSpec/BeEql:
 RSpec/ExampleLength:
   Enabled: false
 
+RSpec/PredicateMatcher:
+  Enabled: false
+
 RSpec/ExpectInHook:
   Enabled: false
 
